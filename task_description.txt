@@ -1,0 +1,34 @@
+Setup a similar docker-compose (found in this folder) to how weaviate does it but for chromadb
+
+NOTES:
+Main chroma service can be instantiated with the official docker image like they do in their
+docker compose here: https://github.com/chroma-core/chroma/blob/main/docker-compose.yml
+A service is needed for the sentencetransformers model that does the inference
+
+task 1
+======
+take as example the provided embedding function for bge and create a
+sentencetransformer service with 2 endpoints:
+
+1. inference endpoint like this
+@app.post("/v1/embed")
+def embed(texts: Documents) -> Embeddings:
+
+2. healthcheck endpoint to see if service is running
+@app.get("/health")
+def healthcheck():
+    return "ok"
+
+task 2
+======
+create a docker image of the above service and 
+test the functionality (post some documents and get vector representations)
+
+task 3
+======
+modify the embedding function for bge to actually call (make a post request with list of strings/text in body) the  
+sentencetransformers service and use it in a python script to check functionality
+
+task 4
+======
+create a collection with ChromaHttpClient using the modified embedding function you created in task 3

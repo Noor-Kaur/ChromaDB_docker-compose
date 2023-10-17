@@ -1,0 +1,34 @@
+version: '3.9'
+
+networks:
+  chromadb_net:
+    driver: bridge
+services:
+  server:
+    image: ghcr.io/chroma-core/chroma:latest
+    container_name: chroma_server
+    volumes:
+      # Default configuration for persist_directory in chromadb/config.py
+      # Currently it's located in "/chroma/chroma/"
+      - ./chroma_persistent_folder:/chroma/chroma/
+    ports:
+      - 8000:8000
+    networks:
+      - chromadb_net
+    environment:
+      transformer_api: "http://transformer:5000/v1/embed"
+    
+  transformer:
+    image: bge_func
+    container_name: transformer
+    ports:
+    - "5000:5000"
+    networks:
+      - chromadb_net
+      
+volumes:
+  backups:
+    driver: local
+  chroma_persistent_folder:
+    driver: local
+
